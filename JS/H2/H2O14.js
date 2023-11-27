@@ -23,7 +23,7 @@ function setup() {
   textFont("Georgia");
   textSize(18);
   noStroke();
-  frameRate(2);
+  frameRate(50);
   breedte = spriteSheet.width;
   hoogte = spriteSheet.height;
   sBr = breedte / aantalSpriteKolommen;

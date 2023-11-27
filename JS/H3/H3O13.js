@@ -77,11 +77,18 @@ function draw() {
   c2.beweeg();
   c1.teken();
   c2.teken();
-  
   // Schakel onderstaande regels in om het programma makkelijker te kunnen testen
 
-  // tekst='c1:'+c1.snelheid+' '+c1.diameter+' '+c1.x+'\n'+'c2:'+c2.snelheid+' '+c2.diameter+' '+c2.x;
-  // text(tekst,0,0,canvas.width,canvas.height);  
+  tekst='c1:'+c1.snelheid+' '+c1.diameter+' '+c1.x+'\n'+'c2:'+c2.snelheid+' '+c2.diameter+' '+c2.x;
+  text(tekst,0,0,canvas.width,canvas.height);  
+  if (c1.x == c2.x && c1.diameter == c2.diameter) {
+    background('green');
+    textAlign(CENTER,CENTER);
+    textSize(80);
+    fill('white');
+    text('gelukt!',0,0,canvas.width,canvas.height);
+    noLoop()
+  }
 }
 
 function mousePressed() {

@@ -36,7 +36,7 @@ class Vogel {
       noStroke();
       image(this.afbeelding,this.x,this.y,this.breedte,this.hoogte);
       fill(255,0,0,0.25);
-      rect(this.x + this.marge, this.y + this.marge,this.breedte - 2*this.marge,this.hoogte - 2*this.marge);
+      //rect(this.x + this.marge, this.y + this.marge,this.breedte - 2*this.marge,this.hoogte - 2*this.marge);
       pop();
   }
 }
@@ -72,6 +72,8 @@ class Obstakel {
     pop();
   }
 }
+
+
 
 /*  **********************************************************
     **    EINDE klasse Obstakel    BEGIN klasse Bluebird    **

@@ -50,7 +50,12 @@ var jos = {
   },
 
   wordtGeraakt(vijand) {
-    return false;
+    if (this.x == vijand.x && this.y == vijand.y) {
+      return true;
+    }
+    else {
+      return false;
+    }
   },
 
   toon() {
@@ -102,6 +107,7 @@ function draw() {
   raster.teken();
   jos.beweeg();
   jos.toon();
+  alice.beweeg();
   alice.toon();
 
   if (jos.wordtGeraakt(alice)) {

@@ -26,6 +26,7 @@ var jos = {
   aantalFrames: 6,
   frameNummer: 3,
   stapGrootte: null,
+  gehaald: false,
 
   beweeg() {
     if (keyIsDown(LEFT_ARROW)) {
@@ -45,8 +46,12 @@ var jos = {
       this.frameNummer = 5;
     }
     
-    this.x = constrain(this.x,0,canvas.width-raster.celGrootte);
+    this.x = constrain(this.x,0,canvas.width);
+    console.log(this.x);
     this.y = constrain(this.y,0,canvas.height-raster.celGrootte);
+    if (this.x == 900) {
+      this.gehaald = true;
+    }
   },
   
   wordtGeraakt(vijand) {
@@ -110,6 +115,12 @@ function draw() {
   jos.toon();
   alice.toon();
   if (jos.wordtGeraakt(alice)) {
+    noLoop();
+  }
+  if (jos.gehaald) {
+    background('green');
+    fill('white');
+    text("Je hebt gewonnen!",30,300);
     noLoop();
   }
 }

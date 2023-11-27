@@ -14,7 +14,7 @@ class Boom {
   teken() {
     push();
     translate(this.x,375);
-    fill('sienna');
+    fill('burlywood');
     rect(0,0,20 + 2*this.leeftijd,-100 - 10*this.leeftijd);
     fill(this.kleur);
     ellipse((20 + 2*this.leeftijd) / 2,-90 - 5*this.leeftijd,80 + 4*this.leeftijd,130 + 10*this.leeftijd);
@@ -31,6 +31,9 @@ function setup() {
   boom1 = new Boom(1,'olive',130);
   boom2 = new Boom(5,'forestgreen',300);
   boom3 = new Boom(3,'yellowgreen',600);
+  boom4 = new Boom(4,'forestgreen',400);
+  boom5 = new Boom(2,'yellowgreen',200);
+
 }
 
 function draw() {
@@ -40,8 +43,14 @@ function draw() {
   boom1.teken();
   boom2.teken();
   boom3.teken();
+  boom4.teken();
+  boom5.teken();
+
   
   boom1.groei();
   boom2.groei();
   boom3.groei();
+  boom4.groei();
+  boom5.groei();
+
 }

@@ -38,6 +38,11 @@ function draw() {
 
   kolom = frameCount % aantalSpriteKolommen;
 
+  if (kolom == 11) {
+    rij++;
+  }
+  rij = rij % aantalSpriteRijen
+
   fill('black');
   text("frameCount=" + frameCount,5,20);
   text("kolom=" + kolom,5,40);

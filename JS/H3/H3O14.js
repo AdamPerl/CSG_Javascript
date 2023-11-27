@@ -33,13 +33,13 @@ class Racket {
   }
   
   beweeg() {
-    if (key == 'a') {
-      this.x -= this.snelheid;
+    if (this.raaktMuis()) {
+      this.x = constrain(mouseX- this.breedte/2,0,canvas.width - this.breedte);
     }
-    if (key == 'd') {
-      this.x += this.snelheid;
-    }
-    this.x = constrain(this.x,0,canvas.width - this.breedte);
+  }
+
+  raaktMuis() {
+    return (mouseX > this.x && mouseX < this.x + this.breedte && mouseY > this.y && mouseY < this.y + this.hoogte)
   }
 }
 
@@ -106,13 +106,14 @@ class Tennis {
     this.r = racket;
     this.b = bal;
     this.actief = false;
+    this.Afgelopen = false;
   }
   
   beginScherm() {
     push();
     textAlign(CENTER,CENTER);
     fill(0);
-    text("Dit is een simpel tennis-spel. Bestuur je racket met de a (links) en de d (rechts).\n\nDruk op de spatiebalk om het spel te starten.",0,0,canvas.width,canvas.height);
+    text("Dit is een simpel tennis-spel. Bestuur je racket met je muis.\nJe muis moet de raket aanraken.\nDruk op je linkermuisknop om het spel te starten.",0,0,canvas.width,canvas.height);
     pop();
   }
   
@@ -122,6 +123,7 @@ class Tennis {
     fill(0);
     text("HELAAS: je bent AF.",0,0,canvas.width,canvas.height);
     pop();
+    spel.Afgelopen = true;
   }  
   
   update() {
@@ -173,22 +175,28 @@ function draw() {
   spel.teken();
 }
 
-function keyTyped() {
-  if (!spel.actief && keyCode == 32) {
+
+function mouseClicked () {
+  if (!spel.actief) {
     spel.actief = true;
   }
-  else {
-    if (keyCode == ENTER) {
-      if (spel.r.metEffect) {
-        spel.r.kleur = 'white';
-        spel.r.metEffect = false;
-      }
-      else {
-        spel.r.kleur = 'orange';
-        spel.r.metEffect = true;
-      }      
-    }    
+  if (spel.Afgelopen) {
+    spel.Afgelopen = false;
+    setup();
   }
+}
+
+function mouseWheel(wiel) {
+  if (spel.r.metEffect) {
+    spel.r.kleur = 'white';
+    spel.r.metEffect = false;
+  }
+  else {
+    spel.r.kleur = 'orange';
+    spel.r.metEffect = true;
+  }
+
+  return false;
 }
 
 /*  **********************************************************

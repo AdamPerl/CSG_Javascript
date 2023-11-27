@@ -2,7 +2,7 @@
 /*  **********************************************************
     **                BEGIN klasse Cirkel                   **
     ********************************************************** */
-
+var Achtergrondtext = ""
 
 class Cirkel {
   constructor(x,y) {
@@ -72,10 +72,15 @@ function setup() {
   canvas.parent('processing');
   c1 = new Cirkel(canvas.width / 2, canvas.height / 4);
   c2 = new Cirkel(canvas.width / 2, 3 * canvas.height / 4);
+  textFont("Georgia");
+  textSize(90);
+  textAlign(CENTER,CENTER);
+  fill('white');
 }
 
 function draw() {
   background(kleurenSet[kleurNummer]);
+  text(Achtergrondtext,0,0,canvas.width,canvas.height)
   c1.beweeg1();
   c1.teken();
   c2.beweeg2();
@@ -84,6 +89,13 @@ function draw() {
 
 function keyTyped() {
   kleurNummer = floor(random(0,kleurenSet.length));
+ if (keyCode == 32) {
+  if (c1.x == c2.x) {
+    Achtergrondtext = "gelukt!"
+  }else {
+    Achtergrondtext = "c1: "+c1.x+" | "+ "c2: "+ c2.x
+  }
+ }
 }
 
 /*  **********************************************************

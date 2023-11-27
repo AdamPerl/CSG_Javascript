@@ -73,11 +73,15 @@ class Tennisbal {
     this.snelheidY *= -1;
     this.y = r.y - this.straal;
     
-    /* 
-    this.factor = -4 * ((r.x + 0.5 * r.breedte) - this.x) / r.breedte;
-    this.factor = round(100 * this.factor)/100;
-    this.snelheidX = this.basissnelheid * this.factor;    
-    */
+    if (r.metEffect == true) {
+      this.factor = -4 * ((r.x + 0.5 * r.breedte) - this.x) / r.breedte;
+      this.factor = round(100 * this.factor)/100;
+    } else {
+      this.factor = 1;
+    }
+    this.snelheidX = this.basissnelheid * this.factor;
+    
+    this.basissnelheid = constrain(this.basissnelheid * 1.1, 0, 40)
     
   }
   
@@ -135,7 +139,7 @@ class Tennis {
     background(200);
     textFont("Monospace");
     textSize(40);
-    fill('white');
+    fill("white");
     if (!this.actief) {
       this.beginScherm();
     }
@@ -173,6 +177,18 @@ function draw() {
 function keyTyped() {
   if (!spel.actief && keyCode == 32) {
     spel.actief = true;
+  }
+  else {
+    if (keyCode == ENTER) {
+      if (spel.r.metEffect) {
+        spel.r.kleur = 'white';
+        spel.r.metEffect = false;
+      }
+      else {
+        spel.r.kleur = 'orange';
+        spel.r.metEffect = true;
+      }      
+    } 
   }
 }
 

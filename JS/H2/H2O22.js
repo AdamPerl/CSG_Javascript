@@ -5,10 +5,11 @@ var bal = {
   y: 0,
   snelheidX: 8,
   snelheidY: 5,
-  demping: 1.0,
+  demping: 0.8,
+  versnelling: 0.2,
   
   beweeg() {
-    
+    this.snelheidY += this.versnelling
     this.x += this.snelheidX;
     this.y += this.snelheidY;
     
@@ -16,7 +17,8 @@ var bal = {
       this.snelheidX *= -this.demping;
     }
     
-    if (this.y <= this.straal || this.y >= canvas.height - this.straal) {
+    if (this.y>=canvas.height-this.straal) {
+      this.y = canvas.height - this.straal;
       this.snelheidY *= -this.demping;
       this.snelheidX *= this.demping;
     }

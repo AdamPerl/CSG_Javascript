@@ -4,7 +4,7 @@ var bal = {
   x: null,
   y: 0,
   snelheidX: 8,
-  snelheidY: 5,
+  snelheidY: 0,
   demping: 0.90,
   versnelling: 0.2,
   

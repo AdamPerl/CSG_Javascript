@@ -2,8 +2,6 @@
 /*  **********************************************************
     **              BEGIN klasse kleurCode                  **
     ********************************************************** */
-
-
 class kleurCode {
   constructor(reeks,k) {
   this.kleuren = k;
@@ -154,7 +152,7 @@ class codeKraker {
       this.pogingen[p].teken();
       translate(0,60);
     }
-    pop();    
+    pop();
     }
     
     voegVolledigePogingToe() {
@@ -165,9 +163,10 @@ class codeKraker {
       var gelijk = 0;
         for (var p = 0;p < this.poging.length;p++) {
           if (this.pogingen[0].code[p] == this.pogingen[this.pogingen.length-1].code[p]) {
-            this.pogingen[this.pogingen.length-1].geraden[p] = true;
+            this.pogingen[0].geraden[p] = true;
             gelijk++;
           }
+          this.pogingen[this.pogingen.length-1].geraden[p] = true;
         }
         if (gelijk == 4) {
           this.gekraakt = true;

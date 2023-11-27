@@ -25,10 +25,27 @@ function draw() {
   if (keyIsDown(RIGHT_ARROW)) {
     xJos += celGrootte;
   }
-  
+  if (keyIsDown(LEFT_ARROW)) {
+    xJos -= celGrootte;
+  }
+  if (keyIsDown(UP_ARROW)) {
+    yJos -= celGrootte;
+  }
+  if (keyIsDown(DOWN_ARROW)) {
+    yJos += celGrootte;
+  }
   xJos = constrain(xJos,0,width - celGrootte);
-  
+  yJos = constrain(yJos,0,height - celGrootte);
   image(spriteJos,xJos,yJos);
+
+  if (xJos == 6*celGrootte
+    && yJos == 4*celGrootte) {
+    spriteJos.filter(ERODE);
+   }
+   var IDK = new Array("idk", "some", 10909);
+
+   console.log(IDK[0],IDK[1],IDK[2])
+
 }
 
 function tekenRaster() {

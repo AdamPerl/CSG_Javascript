@@ -54,17 +54,24 @@ class Galgje {
 
   verwerkInvoer() {
     // verwerk de invoer
-
-    this.pogingen.push(key);
-    var letterZitInWoord = false;
-    for (var l = 0;l < this.letters.length;l++) {
-      if (this.letters[l] == key) {
-        letterZitInWoord = true;
-        this.geraden[l] = true;
+    var letterIsAlGeprobeerd = false;
+    for (var g = 0; g < this.pogingen.length; g++) {
+      if (this.pogingen[g] == key) {
+        letterIsAlGeprobeerd = true;
       }
     }
-    if (!letterZitInWoord) {
-      this.speler.resterendeBeurten--;
+    if (!letterIsAlGeprobeerd) {
+      this.pogingen.push(key);
+      var letterZitInWoord = false;
+      for (var l = 0;l < this.letters.length;l++) {
+        if (this.letters[l] == key) {
+          letterZitInWoord = true;
+          this.geraden[l] = true;
+        }
+      }
+      if (!letterZitInWoord) {
+        this.speler.resterendeBeurten--;
+      }
     }
   }
 
