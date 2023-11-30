@@ -1,7 +1,8 @@
 //camera
 
 var Difficulty_Array = ["Easy","Normal","Hard","Impossible"];
-var Color_Array = ["green","grey","red","darkred"];
+var Color_Array = ["green","darkgrey","red","white"];
+var Darker_Color_Array = ["darkgreen","grey","darkred", "gold"]; // somehow darkgrey looks less dark then grey
 
 var Main_Menu_Button_Array = ["Play", "Statistics"];
 var Main_Menu_Camera_Array = ["Dificulty_Select", "Statistics"];
@@ -30,6 +31,32 @@ function CreateCloseButton(Self) {
     text("X", Close_ButtonX + Close_Button_Width / 2, Close_ButtonY + Close_Button_Height / 2);
 }
 
+function CreateButton(ButtonX,ButtonY,Button_Width,Button_Height,Delta, Button_Text, Color, HoverColor, Size_Duration) {
+    let Enlarged_Button_Width = Button_Width * 1.1;
+    let Enlarged_Button_Height = Button_Height * 1.1;
+
+    fill(Color);
+
+    if (mouseX > ButtonX && mouseX < ButtonX + Button_Width && mouseY > ButtonY && mouseY < ButtonY + Button_Height) {
+        fill(HoverColor);
+        let lerpedWidth = lerp(Button_Width, Enlarged_Button_Width, Delta);
+        let lerpedHeight = lerp(Button_Height, Enlarged_Button_Height, Delta);
+        let DeltaX = (lerpedWidth - Button_Width) / 2;
+        let DeltaY = (lerpedHeight - Button_Height) / 2;
+        let lerpedX = lerp(ButtonX - DeltaX, ButtonX + DeltaX, 1 / Size_Duration);
+        let lerpedY = lerp(ButtonY - DeltaY, ButtonY + DeltaY, 1 / Size_Duration);
+
+        rect(lerpedX, lerpedY, lerpedWidth, lerpedHeight);
+        fill(0);
+        text(Button_Text, lerpedX + lerpedWidth / 2, lerpedY + lerpedHeight / 2);
+        return true;
+
+    } else {
+        rect(ButtonX, ButtonY, Button_Width, Button_Height);
+        fill(0);
+        text(Button_Text, ButtonX + Button_Width / 2, ButtonY + Button_Height / 2);
+    }
+}
 
 class Camera {
     constructor() {
@@ -57,6 +84,11 @@ class Camera {
         }
         this.Current_Camera = "Main_Menu";
         this.Selected_Game_Mode = null;
+        this.Button_Hover_Frames = [];
+
+        for (let Button_Hover = 0; Button_Hover < Difficulty_Array.length; Button_Hover++) {
+            this.Button_Hover_Frames.push(0); // make 1 new value for each button which is going to be the frames your mouse is on
+        }
     }
 
     Set_Camera(New_Camera) {
@@ -112,30 +144,33 @@ class Camera {
 
             CreateCloseButton(this);
 
-            let Padding_Left = 100
-            
-            for (let index = 0; index < Difficulty_Array.length; index++) {
+            let Padding_Left = 100;
+            let Size_Duration = 10;
 
-                let Game_Mode = Difficulty_Array[index]
-                let Color = Color_Array[index]
+            for (let index = 0; index < Difficulty_Array.length; index++) {
+                let Game_Mode = Difficulty_Array[index];
+                let Color = Color_Array[index];
+                let Dark_Color = Darker_Color_Array[index];
                 let Button_Width = 200;
                 let Button_Height = 50;
-                let ButtonX = index * windowWidth/4 + Padding_Left;
+                let ButtonX = index * windowWidth / 4 + Padding_Left;
                 let ButtonY = windowHeight / 2 - 50;
-    
-                fill(Color)
+            
 
-                if (mouseX > ButtonX && mouseX < ButtonX + Button_Width && mouseY > ButtonY && mouseY < ButtonY + Button_Height) {
+                if (CreateButton(ButtonX,ButtonY,Button_Width,Button_Height, this.Button_Hover_Frames[index]/Size_Duration, Game_Mode, Color, Dark_Color, Size_Duration)) {
+                    if (this.Button_Hover_Frames[index] <= Size_Duration) {
+                        this.Button_Hover_Frames[index]++;
+                    }
                     if (mouseIsPressed === true) {
-                        this.Selected_Game_Mode = Game_Mode
-                        this.Set_Camera("New_Game")
+                        this.Selected_Game_Mode = Game_Mode;
+                        this.Set_Camera("New_Game");
                         return;
                     }
+                } else {
+                    this.Button_Hover_Frames[index] = 0;
                 }
-                rect(ButtonX, ButtonY, Button_Width, Button_Height)
 
-                fill(0);
-                text(Game_Mode, ButtonX + Button_Width / 2, ButtonY + Button_Height / 2);
+                fill(Color);
             }
         }
 

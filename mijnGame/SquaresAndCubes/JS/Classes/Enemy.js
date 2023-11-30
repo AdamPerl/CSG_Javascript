@@ -161,7 +161,6 @@ class Enemy {
                 rect(this.Offset, 0, this.MaxWidth, windowHeight);
             }
             
-            
             pop();
             return;
         }

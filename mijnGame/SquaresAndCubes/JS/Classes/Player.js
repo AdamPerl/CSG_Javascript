@@ -96,29 +96,8 @@ class Player  {
           }
         }
 
-        // they all have the same hitboxes
-        if (Enemy.Type == ("Circle" | "Moving_Circle" | "Circle_Factory")) {
-          // square and circle hitboxes??
-          // update this but i use rectangle hitboxes for testing purposes
-          // Calculate the center of the player's square
-          let playerCenterX = this.x + this.width / 2;
-          let playerCenterY = this.y + this.height / 2;
-          console.log("E")
-          // Calculate the distance between the centers of the player and the enemy
-          let distance = dist(playerCenterX, playerCenterY, Enemy.x, Enemy.y);
-
-          // Calculate the sum of the radii of the player and the enemy
-          let sumOfRadii = (this.width + Enemy.Size) / 2; // Assuming Enemy.Size represents the diameter
-
-          // Check for collision using circular hitbox logic
-          if (Enemy.Hitbox && distance <= sumOfRadii) {
-              this.I_Frames = I_Frames_On_Hit;
-              this.Health -= 1;
-              return true; // Collision occurred
-          }
-        }
-
         if (Enemy.Type == "Beam" && Enemy.Hitbox == true) {
+          //fix this!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
           if (Enemy.Vertical == true) {
             if (Enemy.Offset >= this.x - Enemy.MaxWidth && Enemy.Offset <= this.x + this.Size) {
               this.I_Frames = I_Frames_On_Hit;
@@ -143,11 +122,13 @@ class Player  {
     this.Dash_Frames -= 1;
     this.Dash_Cooldown -= 1;
     this.Check_Hitboxes(Enemy_Array)
-    this.Move();
-    this.Constrain();
-    this.Draw();
+
     if (this.Health <= 0) {
       return true;
     }
+
+    this.Move();
+    this.Constrain();
+    this.Draw();
   }
 }
