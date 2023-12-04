@@ -1,5 +1,4 @@
 
-//https://vigilant-space-memory-rqvvrx9wvqvh59rv-5502.app.github.dev/mijnGame/SquaresAndCubes/index.html
 function preload() {
 
 }
@@ -8,7 +7,6 @@ function preload() {
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
 }
-
 
 function setup() {
     // canvas

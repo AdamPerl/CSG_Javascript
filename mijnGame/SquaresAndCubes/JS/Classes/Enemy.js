@@ -3,7 +3,6 @@ function Generate_True_Or_False() {
     return Number < 0.5 // 49.99% true en 50.01% false (ongeveer)
 }
 
-
 class Enemy {
     constructor(Type, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7) {
         // global values for enemies
@@ -188,7 +187,6 @@ class Enemy {
 
             let Remove_Array = []
 
-
             for (let Beam_Amount = 0; Beam_Amount < this.Beam_Amount; Beam_Amount++) {
                 if (!this.Beams[Beam_Amount]) {
                     //break the loop since the index doesn't exsist and this is a bugfix
@@ -207,7 +205,6 @@ class Enemy {
                 this.Beam_Amount--;
             }
         }
-
     }    
 
     Handle_Frame() {

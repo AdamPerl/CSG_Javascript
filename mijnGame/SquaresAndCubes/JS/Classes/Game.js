@@ -13,7 +13,7 @@ class Game {
     this.Player = Player;
     this.Enemies = [];
     this.EnemyLootTable = [
-      { type: "Rectangle", Weight: 0 },
+      { type: "Rectangle", Weight: 5 },
       { type: "Beam", Weight: 1 },
       // Add more enemy types and difficulties as needed
     ];
