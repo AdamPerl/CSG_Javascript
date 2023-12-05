@@ -99,14 +99,13 @@ class Player  {
         if (Enemy.Type == "Beam" && Enemy.Hitbox == true) {
           //fix this!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
           if (Enemy.Vertical == true) {
-            if (Enemy.Offset >= this.x - Enemy.MaxWidth && Enemy.Offset <= this.x + this.Size) {
+            if (Enemy.Offset >= this.x + this.Size && Enemy.Offset + Enemy.MaxWidth <= this.x) {
               this.I_Frames = I_Frames_On_Hit;
               this.Health -= 1;
               return;
             }
           } else {
-            if (Enemy.Offset >= this.y - Enemy.MaxWidth && Enemy.Offset <= this.y + this.Size) {
-              console.log("HIT BY BEAM")
+            if (Enemy.Offset - Enemy.MaxWidth >= this.y && Enemy.Offset <= this.y + this.Size) {
               this.I_Frames = I_Frames_On_Hit;
               this.Health -= 1;
               return;

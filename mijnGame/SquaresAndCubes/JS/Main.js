@@ -1,7 +1,9 @@
-
+//https://vigilant-space-memory-rqvvrx9wvqvh59rv-5504.app.github.dev/mijnGame/SquaresAndCubes/index.html
 function preload() {
 
 }
+
+// doe bronvermelding naar splice & let
 
 // make  frame fullscreen
 function windowResized() {

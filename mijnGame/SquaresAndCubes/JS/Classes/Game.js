@@ -25,7 +25,6 @@ class Game {
     for (let index = 0; index < Difficulty_Array.length; index++) {
       if (Difficulty_Array[index] === Game_Mode) {
         this.Scaling = Difficulty_Scaling_Array[index];
-        console.log(this.Scaling);
         return;
       }
     }
@@ -85,12 +84,10 @@ class Game {
     }
 
     if (Selected_Type == "Rectangle") {
-      console.log("RECTANGLE")
       this.Enemies.push(new Enemy(Selected_Type, Math.random() * windowWidth, Math.random() * windowHeight, Math.random() * 50 + 50 * this.Modifier));
     }
 
     if (Selected_Type == "Beam") {
-      console.log("beam")
       this.Enemies.push(new Enemy(Selected_Type, Math.random() * windowHeight, null, 30 * this.Modifier, null));
     }
 

@@ -10,7 +10,9 @@ var Main_Menu_Camera_Array = ["Dificulty_Select", "Statistics", "Help_Screen"]; 
 var ESC_Button_Array = ["Restart", "Continue",  "Back to menu"];
 var ESC_Camera_Array = ["Stop_Game", "Play_Ground", "Main_Menu"];
 
-var Button_Cooldown = 10
+var Button_Cooldown = 30
+// make main menu button cooldown, so if the player presses ESC and has their mouse on top of a button and presses it,
+//it will each frame draw both of those cameras, meaning you can see the main menu and the difficulty camera, for instance.
 
 class Sample_Statistics {
     constructor() {
@@ -80,7 +82,7 @@ class Camera {
             Hard: new Sample_Statistics(),
             Impossible: new Sample_Statistics(),
         }
-        this.Button_Press_Cooldown = 10
+        this.Button_Press_Cooldown = Button_Cooldown;
         this.Current_Camera = "Main_Menu";
         this.Selected_Game_Mode = null;
         this.Current_Stats = null;
@@ -163,7 +165,8 @@ class Camera {
         this.Button_Press_Cooldown--;
         if (this.Current_Camera == "Dificulty_Select") {
             if (keyIsPressed && keyCode === 27) {
-                this.Set_Camera("Main_Menu")
+                this.Set_Camera("Main_Menu");
+                return;
             }
             CreateCloseButton(this);
 
@@ -185,7 +188,7 @@ class Camera {
                         this.Dificulty_Button_Array[index]++;
                     }
                     if (mouseIsPressed === true && this.Button_Press_Cooldown < 0) {
-                        this.Button_Press_Cooldown = Button_Cooldown // do button cooldwon
+                        this.Button_Press_Cooldown = Button_Cooldown; // do button cooldwon
                         this.Selected_Game_Mode = Game_Mode;
                         this.Set_Camera("New_Game");
                         return;
@@ -200,7 +203,8 @@ class Camera {
 
         if (this.Current_Camera == "Statistics") {
             if (keyIsPressed && keyCode === 27) {
-                this.Set_Camera("Main_Menu")
+                this.Set_Camera("Main_Menu");
+                return;
             }
             fill(255);
 
@@ -233,12 +237,9 @@ class Camera {
             textAlign(CENTER, CENTER);
             textSize(18);
 
-
             let Size_Duration = 10;
             let Color = "White"
             let Dark_Color = "Grey"
-
-
 
             for (let index = 0; index < Main_Menu_Button_Array.length; index++) {
 
@@ -253,7 +254,8 @@ class Camera {
                     if (this.Main_Menu_Button_Array[index] <= Size_Duration) {
                         this.Main_Menu_Button_Array[index]++;
                     }
-                    if (mouseIsPressed === true) {
+                    if (mouseIsPressed === true && this.Button_Press_Cooldown < 0) {
+                        this.Button_Press_Cooldown = Button_Cooldown;
                         this.Set_Camera(New_Camera_State);
                         return;
                     }
@@ -265,7 +267,8 @@ class Camera {
 
         if (this.Current_Camera == "Help_Screen") {
             if (keyIsPressed && keyCode === 27) {
-                this.Set_Camera("Main_Menu")
+                this.Set_Camera("Main_Menu");
+                return;
             }
             CreateCloseButton(this);
 
@@ -283,6 +286,10 @@ class Camera {
         }
 
         if (this.Current_Camera == "Lost_Screen") {
+            if (keyIsPressed && keyCode === 27) {
+                this.Set_Camera("Main_Menu");
+                return;
+            }
             CreateCloseButton(this);
 
             fill(255);
@@ -317,7 +324,8 @@ class Camera {
                     if (this.ESC_Button_Array[index] <= Size_Duration) {
                         this.ESC_Button_Array[index]++;
                     }
-                    if (mouseIsPressed === true) {
+                    if (mouseIsPressed === true && this.Button_Press_Cooldown < 0) {
+                        this.Button_Press_Cooldown = Button_Cooldown;
                         if (New_Camera_State == "Main_Menu") {
                             this.Set_Camera("Stop_Game") 
                         }
@@ -350,7 +358,7 @@ class Camera {
             this.New_Game.Handle_Frame();
             var Died = this.New_Player.Handle_Frame(this.New_Game.Enemies);
             if (Died) {
-                // no clue why i use this.setcamera as a function
+                // no clue why i use this.setcamera as a function and not as a camera
                 this.Set_Camera("Stop_Game");
                 this.Set_Camera("Lost_Screen");
             }
