@@ -8,11 +8,28 @@ var Main_Menu_Button_Array = ["Play", "Statistics", "Help"]; // the text on the 
 var Main_Menu_Camera_Array = ["Dificulty_Select", "Statistics", "Help_Screen"]; // which camera to go when clickingon the button
 
 var ESC_Button_Array = ["Restart", "Continue",  "Back to menu"];
-var ESC_Camera_Array = ["Stop_Game", "Play_Ground", "Main_Menu"];
+var ESC_Camera_Array = ["New_Game?", "Play_Ground", "Main_Menu"];
 
+var Lost_Screen_Button_Array = ["Restart",  "Back to menu"];
+var Lost_Screen_Camera_Array = ["New_Game?", "Main_Menu"];
+
+
+
+//Button Settings
 var Button_Cooldown = 30
-// make main menu button cooldown, so if the player presses ESC and has their mouse on top of a button and presses it,
-//it will each frame draw both of those cameras, meaning you can see the main menu and the difficulty camera, for instance.
+var Global_Size_Duration = 30;
+var Button_Width = 200;
+var Button_Height = 50;
+var Padding_Left = 100;
+var Normal_Color = "White"
+var Hover_Color = "Grey"
+
+
+// https://easings.net/#easeOutQuint
+function easeOutQuint(x) {
+    return 1 - Math.pow(1 - x, 5);
+}
+
 
 class Sample_Statistics {
     constructor() {
@@ -33,6 +50,7 @@ function CreateCloseButton(Self, newCamera) {
         fill("red");
         if (mouseIsPressed === true) {
             Self.Set_Camera(newCamera)
+            UIClick.play();
             return true;
         }
     }
@@ -50,6 +68,8 @@ function CreateCloseButton(Self, newCamera) {
 function CreateButton(ButtonX, ButtonY, Button_Width, Button_Height, Delta, Button_Text, Color, HoverColor, Size_Duration) {
     let Enlarged_Button_Width = Button_Width * 1.1;
     let Enlarged_Button_Height = Button_Height * 1.1;
+
+   Delta = easeOutQuint(Delta)
 
     fill(Color);
 
@@ -85,11 +105,11 @@ class Camera {
         this.Button_Press_Cooldown = Button_Cooldown;
         this.Current_Camera = "Main_Menu";
         this.Selected_Game_Mode = null;
-        this.Current_Stats = null;
 
         this.Dificulty_Button_Array = [];
         this.Main_Menu_Button_Array = [];
         this.ESC_Button_Array = [];
+        this.Lost_Screen_Button_Array = [];
 
         for (let Index = 0; Index < Difficulty_Array.length; Index++) {
             this.Dificulty_Button_Array.push(0); // make 1 new value for each button which is going to be the frames your mouse is on
@@ -102,6 +122,37 @@ class Camera {
         for (let Index = 0; Index < Difficulty_Array.length; Index++) {
             this.ESC_Button_Array.push(0); // make 1 new value for each button which is going to be the frames your mouse is on
         }
+        for (let Index = 0; Index < Lost_Screen_Button_Array.length; Index++) {
+            this.Lost_Screen_Button_Array.push(0); // make 1 new value for each button which is going to be the frames your mouse is on
+        }
+    }
+
+    Destroy_Game() {
+        let Mode = this.Selected_Game_Mode
+        this.Statistics[Mode].Max_Score = Math.max(Math.round(this.New_Game.Score), this.Statistics[Mode].Max_Score);
+        this.Statistics[Mode].Max_Time_Survived = Math.max(Math.round(this.New_Game.Time_Survived/60),  this.Statistics[Mode].Max_Time_Survived);
+        this.Statistics[Mode].Max_Level = Math.max(Math.round(this.New_Game.level), this.Statistics[Mode].Max_Level);
+
+        this.New_Game = null;
+        this.New_Player = null;
+        if (Play_Music.isPlaying()) {
+            Play_Music.stop();
+        }
+        if (!Menu.isPlaying()) {
+            Menu.loop();
+        }
+        return;
+    }
+
+    Create_Game() {
+        this.New_Player = new Player();
+        this.New_Game = new Game(this.New_Player, this.Selected_Game_Mode);
+        this.Set_Camera("Play_Ground");
+        if (!Play_Music.isPlaying()) {
+            Menu.stop();
+            Play_Music.loop();
+        }
+        return;
     }
 
     Set_Camera(New_Camera) {
@@ -110,39 +161,27 @@ class Camera {
 
 
         if (this.Current_Camera == "Main_Menu") {
-
+            if (Game_Over.isPlaying()) {
+                Game_Over.stop();
+            }
             return;
         }
-        
-        if (this.Current_Camera == "Stop_Game") {
-            let Mode = this.Selected_Game_Mode
-            this.Statistics[Mode].Max_Score = Math.max(Math.round(this.New_Game.Score), this.Statistics[Mode].Max_Score);
-            this.Statistics[Mode].Max_Time_Survived = Math.max(Math.round(this.New_Game.Time_Survived/60),  this.Statistics[Mode].Max_Time_Survived);
-            this.Statistics[Mode].Max_Level = Math.max(Math.round(this.New_Game.level), this.Statistics[Mode].Max_Level);
-
-            this.New_Game = null;
-            this.New_Player = null;
-            return;
-        }
-
-
-        if (this.Current_Camera == "New_Game") {
-            this.New_Player = new Player();
-            this.New_Game = new Game(this.New_Player, this.Selected_Game_Mode);
-            this.Set_Camera("Play_Ground");
-            return;
-        }
+    
 
         if (this.Current_Camera == "Play_Ground") {
+            if (Game_Over.isPlaying()) {
+                Game_Over.stop();
+            }
             noCursor();
             return;
         }
 
         if (this.Current_Camera == "Lost_Screen") {
+            if (Play_Music.isPlaying()) {
+                Play_Music.stop();
+            }
+            Game_Over.loop();
             cursor(ARROW);
-
-            this.New_Game = null;
-            this.New_Player = null;
             return;
         }
 
@@ -170,34 +209,29 @@ class Camera {
             }
             CreateCloseButton(this);
 
-            let Padding_Left = 100;
-            let Size_Duration = 10;
 
             for (let index = 0; index < Difficulty_Array.length; index++) {
                 let Game_Mode = Difficulty_Array[index];
-                let Color = Color_Array[index];
+                let Normal_Color = Color_Array[index];
                 let Dark_Color = Darker_Color_Array[index];
-                let Button_Width = 200;
-                let Button_Height = 50;
                 let ButtonX = index * windowWidth / 4 + Padding_Left;
                 let ButtonY = windowHeight / 2 - 50;
             
-
-                if (CreateButton(ButtonX, ButtonY, Button_Width, Button_Height, this.Dificulty_Button_Array[index]/Size_Duration, Game_Mode, Color, Dark_Color, Size_Duration)) {
-                    if (this.Dificulty_Button_Array[index] <= Size_Duration) {
+                if (CreateButton(ButtonX, ButtonY, Button_Width, Button_Height, this.Dificulty_Button_Array[index]/Global_Size_Duration, Game_Mode, Normal_Color, Dark_Color, Global_Size_Duration)) {
+                    if (this.Dificulty_Button_Array[index] <= Global_Size_Duration) {
                         this.Dificulty_Button_Array[index]++;
                     }
                     if (mouseIsPressed === true && this.Button_Press_Cooldown < 0) {
+                        UIClick.play()
                         this.Button_Press_Cooldown = Button_Cooldown; // do button cooldwon
                         this.Selected_Game_Mode = Game_Mode;
-                        this.Set_Camera("New_Game");
+                        this.Create_Game();
                         return;
                     }
                 } else {
                     this.Dificulty_Button_Array[index] = 0;
                 }
 
-                fill(Color);
             }
         }
 
@@ -208,7 +242,7 @@ class Camera {
             }
             fill(255);
 
-            textAlign(LEFT); // left zodat het mooi naast elkaar zit.
+            textAlign(LEFT);
             textSize(20);
 
             let Padding_Left = 50
@@ -219,9 +253,8 @@ class Camera {
                 text("Current Score: " + Statistics.Max_Score, index * windowWidth/4 + Padding_Left, windowHeight / 2 - 50);
                 text("Highest Time: " + Statistics.Max_Time_Survived, index * windowWidth/4 + Padding_Left, windowHeight / 2);
                 text("Highest Level: " + Statistics.Max_Level, index * windowWidth/4 + Padding_Left, windowHeight / 2 + 50);
-                let Color = Color_Array[index]
-                fill(Color)
-                text(Difficulty_Array[index], index * windowWidth/4 + Padding_Left, windowHeight / 2 - 100)
+                fill(Color_Array[index]);
+                text(Difficulty_Array[index], index * windowWidth/4 + Padding_Left, windowHeight / 2 - 100);
                 pop();
             }
 
@@ -237,10 +270,6 @@ class Camera {
             textAlign(CENTER, CENTER);
             textSize(18);
 
-            let Size_Duration = 10;
-            let Color = "White"
-            let Dark_Color = "Grey"
-
             for (let index = 0; index < Main_Menu_Button_Array.length; index++) {
 
                 let Text = Main_Menu_Button_Array[index]
@@ -250,12 +279,13 @@ class Camera {
                 let ButtonX = windowWidth / 2 - Button_Width / 2;
                 let ButtonY = windowHeight / 2 + 100 * index - 50 * Main_Menu_Button_Array.length;
 
-                if (CreateButton(ButtonX,ButtonY,Button_Width,Button_Height, this.Main_Menu_Button_Array[index]/Size_Duration, Text, Color, Dark_Color, Size_Duration)) {
-                    if (this.Main_Menu_Button_Array[index] <= Size_Duration) {
+                if (CreateButton(ButtonX,ButtonY,Button_Width,Button_Height, this.Main_Menu_Button_Array[index]/Global_Size_Duration, Text, Normal_Color, Hover_Color, Global_Size_Duration)) {
+                    if (this.Main_Menu_Button_Array[index] <= Global_Size_Duration) {
                         this.Main_Menu_Button_Array[index]++;
                     }
                     if (mouseIsPressed === true && this.Button_Press_Cooldown < 0) {
                         this.Button_Press_Cooldown = Button_Cooldown;
+                        UIClick.play()
                         this.Set_Camera(New_Camera_State);
                         return;
                     }
@@ -273,7 +303,7 @@ class Camera {
             CreateCloseButton(this);
 
             let instructions =
-                "In this game, you need to try to evade any enemy. They are colored red. Your objective: survive as long as possible!\n\n" +
+                "In this game, you need to try to evade any enemy. They are colored red. \n Your objective: survive as long as possible!\n\n" +
                 "Controls:\n" +
                 "ARROWS: Move your character.\n" +
                 "SPACE: Dash when moving, will give you short invincibility.\n" +
@@ -286,53 +316,83 @@ class Camera {
         }
 
         if (this.Current_Camera == "Lost_Screen") {
-            if (keyIsPressed && keyCode === 27) {
+            if ((keyIsPressed && keyCode === 27) || CreateCloseButton(this)) {
+                this.Destroy_Game();
                 this.Set_Camera("Main_Menu");
                 return;
             }
-            CreateCloseButton(this);
 
             fill(255);
             textSize(50);
             textAlign(CENTER, CENTER);
             text("You died!", windowWidth/2 , 100);
 
-            let Statistics = this.Statistics[this.Selected_Game_Mode];
+
+            let Statistics = this.New_Game
             textSize(25);
-            text("Current Score: " + Statistics.Max_Score, windowWidth/2, windowHeight / 2 - 50);
-            text("Current Time: " + Statistics.Max_Time_Survived, windowWidth/2, windowHeight / 2);
-            text("Current Level: " + Statistics.Max_Level, windowWidth/2, windowHeight / 2 + 50);
+            text(this.Selected_Game_Mode, width / 2, height / 2 - 300);
+            text("Current Score: " + Math.round(Statistics.Score), windowWidth/2, windowHeight / 2 - 50);
+            text("Current Time: " + Math.round(Statistics.Time_Survived/60), windowWidth/2, windowHeight / 2);
+            text("Current Level: " + Math.round(Statistics.level), windowWidth/2, windowHeight / 2 + 50);
 
+            for (let index = 0; index < Lost_Screen_Camera_Array.length; index++) {
 
+                let Text = Lost_Screen_Button_Array[index]
+                let New_Camera_State = Lost_Screen_Camera_Array[index]
+
+                let ButtonX = windowWidth / 2 - Button_Width / 2 + (index-0.5) * Button_Width * 1.3;
+                let ButtonY = windowHeight / 2 + 300;
+
+                if (CreateButton(ButtonX,ButtonY,Button_Width,Button_Height, this.Lost_Screen_Button_Array[index]/Global_Size_Duration, Text, Normal_Color, Hover_Color, Global_Size_Duration)) {
+                    if (this.Lost_Screen_Button_Array[index] <= Global_Size_Duration) {
+                        this.Lost_Screen_Button_Array[index]++;
+                    }
+                    if (mouseIsPressed === true && this.Button_Press_Cooldown < 0) {
+                        this.Button_Press_Cooldown = Button_Cooldown;
+                        UIClick.play()
+                        if (New_Camera_State == "Main_Menu") {
+                            this.Destroy_Game();
+                            this.Set_Camera(New_Camera_State);
+                            return;
+                        }
+                        if (New_Camera_State == "New_Game?") {
+                            this.Create_Game();
+                            return;
+                        }
+                        this.Set_Camera(New_Camera_State);
+                        return;
+                    }
+                } else {
+                    this.Lost_Screen_Button_Array[index] = 0;
+                }
+            }
         }
 
         if (this.Current_Camera == "ESC_Screen") {
-            let Size_Duration = 10;
-            let Color = "White"
-            let Dark_Color = "Grey"
-
             for (let index = 0; index < ESC_Button_Array.length; index++) {
 
                 let Text = ESC_Button_Array[index]
                 let New_Camera_State = ESC_Camera_Array[index]
-                let Button_Width = 300;
-                let Button_Height = 50;
                 let ButtonX = windowWidth / 2 - Button_Width / 2 + index * Button_Width * 1.3 - ESC_Button_Array.length * Button_Width/2.4;
                 let ButtonY = windowHeight / 2 + 300;
 
-                if (CreateButton(ButtonX,ButtonY,Button_Width,Button_Height, this.ESC_Button_Array[index]/Size_Duration, Text, Color, Dark_Color, Size_Duration)) {
-                    if (this.ESC_Button_Array[index] <= Size_Duration) {
+                if (CreateButton(ButtonX,ButtonY,Button_Width,Button_Height, this.ESC_Button_Array[index]/Global_Size_Duration, Text, Normal_Color, Hover_Color, Global_Size_Duration)) {
+                    if (this.ESC_Button_Array[index] <= Global_Size_Duration) {
                         this.ESC_Button_Array[index]++;
                     }
                     if (mouseIsPressed === true && this.Button_Press_Cooldown < 0) {
+                        UIClick.play()
                         this.Button_Press_Cooldown = Button_Cooldown;
                         if (New_Camera_State == "Main_Menu") {
-                            this.Set_Camera("Stop_Game") 
+                            this.Destroy_Game();
+                            this.Set_Camera(New_Camera_State);
+                            return;
+                        }
+                        if (New_Camera_State == "New_Game?") {
+                            this.Create_Game();
+                            return;
                         }
                         this.Set_Camera(New_Camera_State);
-                        if (New_Camera_State == "Stop_Game") {
-                            this.Set_Camera("New_Game")
-                        }
                         return;
                     }
                 } else {
@@ -358,8 +418,6 @@ class Camera {
             this.New_Game.Handle_Frame();
             var Died = this.New_Player.Handle_Frame(this.New_Game.Enemies);
             if (Died) {
-                // no clue why i use this.setcamera as a function and not as a camera
-                this.Set_Camera("Stop_Game");
                 this.Set_Camera("Lost_Screen");
             }
         }

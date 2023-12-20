@@ -3,21 +3,29 @@ function Generate_True_Or_False() {
     return Number < 0.5 // 49.99% true en 50.01% false (ongeveer)
 }
 
+
 class Enemy {
     constructor(Type, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7) {
         // global values for enemies
+        if (Arg7 == null) {
+            Arg7 = 60
+        }
+
         this.Type = Type;
         this.Hitbox = false;
-        this.Life_Time = 60;
+        this.Life_Time = Arg7;
         this.Current_Life_Time = 0;
         this.Color = color("rgba(255, 0, 0, 0.25)");
 
         if (Type == "Beam") {
+            if (Arg5 == null) {
+                Arg5 = 30
+            }
             this.Offset = Arg1;
             this.Vertical = Arg2;
-            this.Width = Arg3/(1/0.8); // 80%; make warning smaller then actual beam
+            this.Width = Arg3 * 0.8; // 80%; make warning smaller then actual beam
             this.MaxWidth = Arg3;
-            this.Warn_Time = 30;
+            this.Warn_Time = Arg5;
             this.Current_Warn_Frame = 0;
             this.Alter_Beam = Arg4;
 
@@ -33,7 +41,7 @@ class Enemy {
         if (Type == "Rectangle") {
             this.x = Arg1;
             this.y = Arg2;
-            this.Width = Arg3/(1/0.8); // 80%
+            this.Width = Arg3 * 0.8; // 80%
             this.MaxWidth = Arg3;
             this.Warn_Time = 30;
             this.Current_Warn_Frame = 0;
@@ -45,22 +53,29 @@ class Enemy {
             this.StartY = Arg2;
             this.EndX = Arg3;
             this.EndY = Arg4;
-            this.Width = Arg5;
-            this.Duration = Arg6;
+            this.Width = Arg5 * 0.8; // 80%
+            this.MaxWidth = Arg5;
+            this.Life_Time = (dist(Arg1,Arg2,Arg3,Arg4)/2) / Arg6;
+            this.Warn_Time = 30;
+            this.Current_Warn_Frame = 0;
             return;
         }
 
         if (Type == "World_Beam") {
+            if (Arg5 == null) {
+                Arg5 = Generate_True_Or_False();
+            }
             this.Vertical = Arg1;
             this.Amount = Arg2;
             this.Width = Arg3;
             this.Delay = Arg4;
+            this.Alter = Arg5;
             this.Current_Delay = 0;
             this.Beam_Amount = 0;
             this.Beams = []
 
             if (this.Vertical == null) {
-                this.Vertical = Generate_True_Or_False(); // if argument is null, generate automaticly
+                this.Vertical = Generate_True_Or_False();
             }
             if (this.Vertical == true) {
                 this.Spaceing = windowHeight/this.Amount
@@ -69,9 +84,20 @@ class Enemy {
             }
 
             // this exsist, so when creating a new world beam, it will return a lot of new beams, which the worldbeam exsists of.
-            for (let Beam_Amount = 0; Beam_Amount < this.Amount; Beam_Amount++) { 
-                this.Beams.push( new Enemy("Beam", this.Spaceing * Beam_Amount + this.Width ,this.Vertical, this.Width, false))
+            // and i use 2 different for loops since the beams can coome from horizontal and vertical
+            if (this.Alter == true) {
+                for (let Beam_Amount = 0; Beam_Amount < this.Amount; Beam_Amount++) { 
+                    let Spacing = this.Spaceing * Beam_Amount
+                    this.Beams.push( new Enemy("Beam", Spacing ,this.Vertical, this.Width, this.Alter, 10, null, 10))
+                }
+            } else {
+                for (let Beam_Amount = 0; Beam_Amount < this.Amount; Beam_Amount++) { 
+                    let Spacing= this.Spaceing * Beam_Amount;
+                    this.Beams.push( new Enemy("Beam", Spacing ,this.Vertical, this.Width, this.Alter, 10, null, 10))
+                }
             }
+          
+
             return;
         }
 
@@ -123,6 +149,28 @@ class Enemy {
             pop();
             return;
         }
+
+        if (this.Type == "Moving_Rectangle") {
+
+            this.Draw_Line_And_Points();
+
+            push();
+            noStroke();
+            // the 3th argument here matters for the speed of the lerp
+            let TargetWidth = lerp(this.Width, this.MaxWidth, 1/this.Warn_Time);
+            let DeltaX = (TargetWidth - this.Width) / 2;
+            let DeltaY = (TargetWidth - this.Width) / 2;
+
+            this.Width = TargetWidth;
+            this.StartX = lerp(this.StartX - DeltaX, this.StartX + DeltaX, 1/60);
+            this.StartY = lerp(this.StartY - DeltaY, this.StartY + DeltaY, 1/60);
+
+            fill(this.Color);
+            rect(this.StartX, this.StartY, this.Width, this.Width);
+
+            pop();
+            return;
+        }
     }
 
     HitBox_Frame() {
@@ -166,12 +214,16 @@ class Enemy {
 
         if (this.Type == "Moving_Rectangle") {
 
+            this.Draw_Line_And_Points();
 
-            
-        }
+            noStroke();
+            this.Color.setAlpha(255);
 
-        if (this.Type == "Rectangle_Factory") {
+            fill(this.Color);
 
+            let New_X = lerp(this.StartX, this.EndX, this.Current_Life_Time/this.Life_Time);
+            let Nex_Y = lerp(this.StartY, this.EndY, this.Current_Life_Time/this.Life_Time);
+            rect(New_X, Nex_Y, this.Width, this.Width);
         }
 
         if (this.Type == "World_Beam") {
@@ -205,10 +257,21 @@ class Enemy {
                 this.Beam_Amount--;
             }
         }
-    }    
+    }
+
+    // private function but used as a mothod because it needs to access "this".
+    Draw_Line_And_Points() {
+        let Center_X = lerp(this.StartX, this.EndX, this.Current_Life_Time/this.Life_Time) + this.Width/2;
+        let Center_Y = lerp(this.StartY, this.EndY, this.Current_Life_Time/this.Life_Time) + this.Width/2;
+      
+        push();
+        stroke("white");
+        line(Center_X, Center_Y, this.EndX + this.Width/2, this.EndY + this.Width/2);
+        point(this.EndX + this.Width/2, this.EndY + this.Width/2);
+        pop();
+    }
 
     Handle_Frame() {
-
         if (this.Type == "World_Beam") {
             let Frame = this.HitBox_Frame();
             return Frame
