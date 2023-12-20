@@ -130,7 +130,7 @@ class Camera {
     Destroy_Game() {
         let Mode = this.Selected_Game_Mode
         this.Statistics[Mode].Max_Score = Math.max(Math.round(this.New_Game.Score), this.Statistics[Mode].Max_Score);
-        this.Statistics[Mode].Max_Time_Survived = Math.max(Math.round(this.New_Game.Time_Survived/60),  this.Statistics[Mode].Max_Time_Survived);
+        this.Statistics[Mode].Max_Time_Survived = Math.max(Math.round(this.New_Game.Time_Survived/60*100)/100,  this.Statistics[Mode].Max_Time_Survived);
         this.Statistics[Mode].Max_Level = Math.max(Math.round(this.New_Game.level), this.Statistics[Mode].Max_Level);
 
         this.New_Game = null;
@@ -223,6 +223,7 @@ class Camera {
                     }
                     if (mouseIsPressed === true && this.Button_Press_Cooldown < 0) {
                         UIClick.play()
+                        Start.play();
                         this.Button_Press_Cooldown = Button_Cooldown; // do button cooldwon
                         this.Selected_Game_Mode = Game_Mode;
                         this.Create_Game();
@@ -332,7 +333,7 @@ class Camera {
             textSize(25);
             text(this.Selected_Game_Mode, width / 2, height / 2 - 300);
             text("Current Score: " + Math.round(Statistics.Score), windowWidth/2, windowHeight / 2 - 50);
-            text("Current Time: " + Math.round(Statistics.Time_Survived/60), windowWidth/2, windowHeight / 2);
+            text("Current Time: " + Math.round(Statistics.Time_Survived/60*100)/100, windowWidth/2, windowHeight / 2);
             text("Current Level: " + Math.round(Statistics.level), windowWidth/2, windowHeight / 2 + 50);
 
             for (let index = 0; index < Lost_Screen_Camera_Array.length; index++) {
@@ -357,6 +358,7 @@ class Camera {
                         }
                         if (New_Camera_State == "New_Game?") {
                             this.Create_Game();
+                            Start.play();
                             return;
                         }
                         this.Set_Camera(New_Camera_State);
@@ -390,6 +392,7 @@ class Camera {
                         }
                         if (New_Camera_State == "New_Game?") {
                             this.Create_Game();
+                            Start.play();
                             return;
                         }
                         this.Set_Camera(New_Camera_State);
@@ -406,7 +409,7 @@ class Camera {
             textSize(25);
             text(this.Selected_Game_Mode, width / 2, height / 2 - 300);
             text("Current Score: " + Math.round(Statistics.Score), windowWidth/2, windowHeight / 2 - 50);
-            text("Current Time: " + Math.round(Statistics.Time_Survived/60), windowWidth/2, windowHeight / 2);
+            text("Current Time: " + Math.round(Statistics.Time_Survived/60*100)/100, windowWidth/2, windowHeight / 2);
             text("Current Level: " + Math.round(Statistics.level), windowWidth/2, windowHeight / 2 + 50);
             return;
         }

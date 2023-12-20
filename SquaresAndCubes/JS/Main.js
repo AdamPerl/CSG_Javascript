@@ -10,6 +10,7 @@ function preload() {
     DeathSound = loadSound("Sounds/deathsound.ogg");
     Game_Over = loadSound("Sounds/Sad_Theme.mp3");
     Hit = loadSound("Sounds/Hit.mp3");
+    Start = loadSound("Sounds/Start.mp3");
 
     Play_Music.setVolume(0.3);
 }
@@ -32,6 +33,7 @@ Bronvermelding:
             https://opengameart.org/content/level-up-power-up-coin-get-13-sounds
             https://opengameart.org/content/8bit-death-whirl
             https://opengameart.org/content/sad-theme
+            https://opengameart.org/content/gui-sound-effects-8
         
         https://pixabay.com/sound-effects/hurt-c-08-102842/
 */
