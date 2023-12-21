@@ -1,4 +1,4 @@
-//https://vigilant-space-memory-rqvvrx9wvqvh59rv-5504.app.github.dev/quaresAndCubes/index.html
+//https://vigilant-space-memory-rqvvrx9wvqvh59rv-8080.app.github.dev/SquaresAndCubes/index.html
 
 var First_user_Gesture = false
 
@@ -36,6 +36,9 @@ Bronvermelding:
             https://opengameart.org/content/gui-sound-effects-8
         
         https://pixabay.com/sound-effects/hurt-c-08-102842/
+
+    EasingStyles:
+        https://easings.net
 */
 
 

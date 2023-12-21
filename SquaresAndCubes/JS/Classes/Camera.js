@@ -17,7 +17,7 @@ var Lost_Screen_Camera_Array = ["New_Game?", "Main_Menu"];
 
 //Button Settings
 var Button_Cooldown = 30
-var Global_Size_Duration = 30;
+var Global_Size_Duration = 60;
 var Button_Width = 200;
 var Button_Height = 50;
 var Padding_Left = 100;
@@ -25,11 +25,19 @@ var Normal_Color = "White"
 var Hover_Color = "Grey"
 
 
-// https://easings.net/#easeOutQuint
 function easeOutQuint(x) {
     return 1 - Math.pow(1 - x, 5);
 }
 
+function easeOutElastic(x) {
+    const c4 = (2 * Math.PI) / 3;
+    
+    return x === 0
+      ? 0
+      : x === 1
+      ? 1
+      : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * c4) + 1;
+    }
 
 class Sample_Statistics {
     constructor() {
@@ -69,7 +77,8 @@ function CreateButton(ButtonX, ButtonY, Button_Width, Button_Height, Delta, Butt
     let Enlarged_Button_Width = Button_Width * 1.1;
     let Enlarged_Button_Height = Button_Height * 1.1;
 
-   Delta = easeOutQuint(Delta)
+   //Delta = easeOutQuint(Delta)
+   Delta = easeOutElastic(Delta)
 
     fill(Color);
 
@@ -418,6 +427,14 @@ class Camera {
             if (keyIsPressed && keyCode === 27) {
                 this.Set_Camera("ESC_Screen")
             }
+            push();
+            textSize(20);
+            textAlign(LEFT, CENTER); // als center gaat de tijd veel ste vaak van middenpunt bewegen
+            fill(255); // white
+            text("Score: " + Math.floor(this.New_Game.Score), windowWidth / 2 - 170, 30);
+            text("Time: " + Math.floor(this.New_Game.Time_Survived/60*100)/100, windowWidth / 2 - 20, 30)
+            text("Level: " + this.New_Game.level, windowWidth / 2 + 130, 30);
+            pop();
             this.New_Game.Handle_Frame();
             var Died = this.New_Player.Handle_Frame(this.New_Game.Enemies);
             if (Died) {

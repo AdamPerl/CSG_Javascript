@@ -101,13 +101,6 @@ class Game {
       this.Enemies.splice(remove_indexes[Index], 1);
     }
 
-    // draw score
-    textSize(20);
-    textAlign(CENTER, CENTER);
-    fill(255); // white
-    text("Score: " + Math.floor(this.Score), windowWidth / 2 - 150, 30);
-    text("Time: " + Math.floor(this.Time_Survived/60), windowWidth / 2, 30)
-    text("Level: " + this.level, windowWidth / 2 + 150, 30);
   }
 
   Spawn_Random_Enemy() {
@@ -130,7 +123,6 @@ class Game {
 
     if (Selected_Type == "Beam") {
       this.Enemies.push(new Enemy(Selected_Type, Math.random() * windowHeight, null, 30 * this.Modifier, null));
-      // this.Enemies.push(new Enemy(Selected_Type, 300, null, 30, null));
     }
 
     if (Selected_Type == "World_Beam") {
@@ -144,7 +136,7 @@ class Game {
     }
     
     if (Selected_Type == "Moving_Rectangle") {
-      let Width =  Math.random() * 20 + 30 * this.Modifier;
+      let Width =  Math.random() * 20 + 40 * this.Modifier;
       this.Enemies.push(new Enemy(Selected_Type, Math.random()*windowWidth,Math.random()*windowHeight,Math.random()*windowWidth,Math.random()*windowHeight,Width,1));
     }
   }
