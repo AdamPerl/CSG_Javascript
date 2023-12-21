@@ -139,7 +139,7 @@ class Camera {
     Destroy_Game() {
         let Mode = this.Selected_Game_Mode
         this.Statistics[Mode].Max_Score = Math.max(Math.round(this.New_Game.Score), this.Statistics[Mode].Max_Score);
-        this.Statistics[Mode].Max_Time_Survived = Math.max(Math.round(this.New_Game.Time_Survived/60*100)/100,  this.Statistics[Mode].Max_Time_Survived);
+        this.Statistics[Mode].Max_Time_Survived = (Math.max(Math.round(this.New_Game.Time_Survived/60*100)/100).toFixed(2),  this.Statistics[Mode].Max_Time_Survived);
         this.Statistics[Mode].Max_Level = Math.max(Math.round(this.New_Game.level), this.Statistics[Mode].Max_Level);
 
         this.New_Game = null;
@@ -261,7 +261,7 @@ class Camera {
                 push();
                 let Statistics = this.Statistics[Difficulty_Array[index]]
                 text("Current Score: " + Statistics.Max_Score, index * windowWidth/4 + Padding_Left, windowHeight / 2 - 50);
-                text("Highest Time: " + Statistics.Max_Time_Survived, index * windowWidth/4 + Padding_Left, windowHeight / 2);
+                text("Highest Time: " + Statistics.Max_Time_Survived + "s", index * windowWidth/4 + Padding_Left, windowHeight / 2);
                 text("Highest Level: " + Statistics.Max_Level, index * windowWidth/4 + Padding_Left, windowHeight / 2 + 50);
                 fill(Color_Array[index]);
                 text(Difficulty_Array[index], index * windowWidth/4 + Padding_Left, windowHeight / 2 - 100);
@@ -342,7 +342,7 @@ class Camera {
             textSize(25);
             text(this.Selected_Game_Mode, width / 2, height / 2 - 300);
             text("Current Score: " + Math.round(Statistics.Score), windowWidth/2, windowHeight / 2 - 50);
-            text("Current Time: " + Math.round(Statistics.Time_Survived/60*100)/100, windowWidth/2, windowHeight / 2);
+            text("Current Time: " + (Math.round(Statistics.Time_Survived/60*100)/100).toFixed(2) + "s", windowWidth/2, windowHeight / 2);
             text("Current Level: " + Math.round(Statistics.level), windowWidth/2, windowHeight / 2 + 50);
 
             for (let index = 0; index < Lost_Screen_Camera_Array.length; index++) {
@@ -418,7 +418,7 @@ class Camera {
             textSize(25);
             text(this.Selected_Game_Mode, width / 2, height / 2 - 300);
             text("Current Score: " + Math.round(Statistics.Score), windowWidth/2, windowHeight / 2 - 50);
-            text("Current Time: " + Math.round(Statistics.Time_Survived/60*100)/100, windowWidth/2, windowHeight / 2);
+            text("Current Time: " + (Math.round(Statistics.Time_Survived/60*100)/100).toFixed(2) + "s", windowWidth/2, windowHeight / 2);
             text("Current Level: " + Math.round(Statistics.level), windowWidth/2, windowHeight / 2 + 50);
             return;
         }
@@ -432,7 +432,7 @@ class Camera {
             textAlign(LEFT, CENTER); // als center gaat de tijd veel ste vaak van middenpunt bewegen
             fill(255); // white
             text("Score: " + Math.floor(this.New_Game.Score), windowWidth / 2 - 170, 30);
-            text("Time: " + Math.floor(this.New_Game.Time_Survived/60*100)/100, windowWidth / 2 - 20, 30)
+            text("Time: " + (Math.floor(this.New_Game.Time_Survived/60*100)/100).toFixed(2) + "s", windowWidth / 2 - 20, 30)
             text("Level: " + this.New_Game.level, windowWidth / 2 + 130, 30);
             pop();
             this.New_Game.Handle_Frame();

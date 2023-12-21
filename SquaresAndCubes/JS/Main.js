@@ -39,6 +39,9 @@ Bronvermelding:
 
     EasingStyles:
         https://easings.net
+
+    toFixed();
+        https://stackoverflow.com/questions/15762768/javascript-math-round-to-two-decimal-places
 */
 
 

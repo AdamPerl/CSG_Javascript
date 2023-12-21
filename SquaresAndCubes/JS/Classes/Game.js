@@ -76,7 +76,6 @@ class Game {
         this.EnemyLootTable.push(Level_Enemy_Add[this.level]);
         this.Update_Total_Weight();
         Level_Up.play();
-        console.log("E");
       }
       this.level++;
     }
